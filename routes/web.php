@@ -7,6 +7,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\EmpleadoAuthController;
 use App\Http\Controllers\Auth\EmpleadoSessionController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AsistenciaEntradaController;
+use App\Http\Controllers\AsistenciaSalidaController;
+
+Route::middleware(['auth:empleado'])->group(function () {
+    Route::post('/registrar-entrada', [AsistenciaEntradaController::class, 'store'])->name('empleadoUser.registrarEntrada');
+    Route::post('/registrar-salida', [AsistenciaSalidaController::class, 'store'])->name('empleadoUser.registrarSalida');
+});
 
 
 //Welcome

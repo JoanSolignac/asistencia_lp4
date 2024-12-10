@@ -11,6 +11,8 @@ class AsistenciaSalida extends Model
 
     protected $table = 'asistencia_salidas';
 
+    protected $fillable = ['idEmpleado', 'hora_salida', 'estado'];
+
     public function empleado()
     {
         return $this->belongsTo(Empleado::class, 'idEmpleado');

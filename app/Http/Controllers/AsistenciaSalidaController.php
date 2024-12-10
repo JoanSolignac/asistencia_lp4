@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AsistenciaSalida;
 use Illuminate\Http\Request;
+use App\Models\Empleado;
 
 class AsistenciaSalidaController extends Controller
 {
@@ -28,8 +29,38 @@ class AsistenciaSalidaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Obtener el id del empleado desde el formulario
+        $empleado_id = $request->input('empleado_id');
+
+        // Buscar los datos del empleado
+        $empleado = Empleado::findOrFail($empleado_id);
+
+        // Obtener la hora actual
+        $horaActual = now();
+
+        // Determinar si la salida fue antes o después de la hora de salida esperada
+        if ($horaActual->greaterThan($empleado->hora_salida)) {
+            $estado = 'Después de la hora';
+        } else {
+            $estado = 'Antes de la hora';
+        }
+
+        // Registrar la salida con el estado correspondiente
+        AsistenciaSalida::create([
+            'idEmpleado' => $empleado_id,  // Usamos el id recibido del formulario
+            'hora_salida' => $horaActual,
+            'estado' => $estado,
+        ]);
+
+        // Retornar un mensaje descriptivo según el estado
+        $mensaje = $estado === 'Después de la hora' 
+            ? 'Salida registrada: Después de la hora.' 
+            : 'Salida registrada: Antes de la hora.';
+
+        return redirect()->route('empleadoUser.dashboard')->with('success', $mensaje);
     }
+
+
 
     /**
      * Display the specified resource.
