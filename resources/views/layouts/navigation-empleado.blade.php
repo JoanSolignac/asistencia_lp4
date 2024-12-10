@@ -17,7 +17,7 @@
                 </li>
 
 
-                <li class="nav-item dropdown">
+                <!-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdownAsistencia" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {{ __('Asistencia') }}
                     </a>
@@ -38,7 +38,7 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> -->
             </ul>
 
         <ul class="navbar-nav ms-auto">
@@ -48,7 +48,7 @@
                 {{ __('Settings') }}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item text-black" href="#">{{ __('Perfil') }}</a></li>
+                    <!-- <li><a class="dropdown-item text-black" href="#">{{ __('Perfil') }}</a></li> -->
                     <form method="POST" action="{{ route('empleados.logout') }}">
                         @csrf
                         <li><button type="submit" class="dropdown-item text-black">{{ __('Cerrar sesión') }}</button></li>
