@@ -31,7 +31,7 @@ class EmpleadoController extends Controller
             'estado' => 'required|string|max:50',
             'hora_entrada' => 'required|date_format:H:i', // Aseguramos formato de hora
             'hora_salida' => 'required|date_format:H:i',
-            'correo' => 'required|email|max:255|unique:empleados_users,correo',
+            'correo' => 'required|email|max:255|unique:empleados_users,correo,' . ($empleado->empleadoUser->id ?? 'null'),
         ]);
     
         // Parsear la fecha de nacimiento al formato Y-m-d
@@ -54,15 +54,16 @@ class EmpleadoController extends Controller
             'hora_salida' => $horaSalida,
         ]);
     
-        // Crear el usuario relacionado, asegurándose de pasar 'idEmpleado'
+            // Crear el usuario relacionado
         EmpleadoUser::create([
-            'idEmpleado' => $empleado->id, // Aquí se pasa el id del empleado
+            'idEmpleado' => $empleado->id,
             'correo' => $request->correo,
-            'password' => bcrypt($request->dni), // Se utiliza bcrypt para cifrar la contraseña
+            'password' => bcrypt($request->dni), // Contraseña hasheada
         ]);
-    
+
+
         //Por ahora que me mande a Inicio
-        return redirect()->route('dashboard')->with('success', 'Empleado agregado correctamente');
+        return redirect()->route('empleados.index')->with('success', 'Empleado agregado correctamente');
     }
     
     // Mostrar la lista de empleados
@@ -73,90 +74,61 @@ class EmpleadoController extends Controller
     }
 
     // Mostrar el formulario para editar un empleado
-    public function edit($id)
+    public function edit(Empleado $empleado)
     {
-        // Obtener el empleado por su ID
-        $empleado = Empleado::findOrFail($id);
-        
-        // Obtener todos los roles disponibles para asignar al empleado
         $roles = Rol::all();
+
+        // Asegúrate de que las horas estén en formato H:i (sin segundos)
+        $empleado->hora_entrada = Carbon::parse($empleado->hora_entrada)->format('H:i');
+        $empleado->hora_salida = Carbon::parse($empleado->hora_salida)->format('H:i');
         
         return view('empleados.edit', compact('empleado', 'roles'));
     }
 
     // Actualizar la información de un empleado
-    public function update(Request $request, $id)
+
+    public function update(Request $request, Empleado $empleado)
     {
-        // Validar los datos del formulario
-        $request->validate([
-            'nombre_apellido' => 'required|string|max:255',
-            'dni' => 'required|string|max:8|unique:empleados,dni,' . $id,
-            'fecha_nacimiento' => 'required|date',
-            'telefono' => 'required|string|max:30|unique:empleados,telefono,' . $id,
-            'direccion' => 'required|string|max:255',
-            'idRol' => 'required|exists:roles,id',
-            'estado' => 'required|string|max:50',
-            'hora_entrada' => 'required|date_format:H:i',
-            'hora_salida' => 'required|date_format:H:i',
-            'correo' => 'required|email|max:255|unique:empleados_users,correo,' . $id,
-        ]);
+    // Validar los datos del formulario
+    $validated = $request->validate([
+        'nombre_apellido' => 'required|string|max:255',
+        'dni' => 'required|digits:8',
+        'fecha_nacimiento' => 'required|date',
+        'telefono' => 'required|digits_between:6,15',
+        'direccion' => 'required|string|max:255',
+        'idRol' => 'required|exists:roles,id',
+        'estado' => 'required|string',
+        'hora_entrada' => 'required|date_format:H:i',
+        'hora_salida' => 'required|date_format:H:i',
+    ]);
 
-        // Obtener el empleado a editar
-        $empleado = Empleado::findOrFail($id);
+    // Parsear las fechas y horas a los formatos correctos
+    $validated['fecha_nacimiento'] = Carbon::parse($validated['fecha_nacimiento'])->format('Y-m-d');
+    $validated['hora_entrada'] = Carbon::parse($validated['hora_entrada'])->format('H:i:s');
+    $validated['hora_salida'] = Carbon::parse($validated['hora_salida'])->format('H:i:s');
 
-        // Parsear la fecha de nacimiento y las horas
-        $fechaNacimiento = Carbon::parse($request->fecha_nacimiento)->format('Y-m-d');
-        $horaEntrada = Carbon::parse($request->hora_entrada)->format('H:i:s');
-        $horaSalida = Carbon::parse($request->hora_salida)->format('H:i:s');
+    // Actualizar el empleado
+    $empleado->update($validated);
 
-        // Actualizar la información del empleado
-        $empleado->update([
-            'nombre_apellido' => $request->nombre_apellido,
-            'dni' => $request->dni,
-            'fecha_nacimiento' => $fechaNacimiento,
-            'telefono' => $request->telefono,
-            'direccion' => $request->direccion,
-            'idRol' => $request->idRol,
-            'estado' => $request->estado,
-            'hora_entrada' => $horaEntrada,
-            'hora_salida' => $horaSalida,
-        ]);
-
-        
-
-        // Si es necesario, también actualizar el usuario relacionado
-        $empleadoUser = EmpleadoUser::where('idEmpleado', $id)->first();
-        if ($empleadoUser) {
-            $empleadoUser->update([
-                'correo' => $request->correo,
-                'password' => bcrypt($request->dni), // Actualizar la contraseña si es necesario
-            ]);
-        }
-
-        return redirect()->route('empleados.index')->with('success', 'Empleado actualizado correctamente');
+    // Redirigir con mensaje de éxito
+    return redirect()->route('empleados.index')->with('success', 'Empleado actualizado exitosamente.');
     }
 
-    
+
 
     // Eliminar un empleado
-    public function destroy($id)
+    public function destroy(Empleado $empleado)
     {
-        // Obtener el empleado a eliminar
-        $empleado = Empleado::findOrFail($id);
-
-        // Eliminar el empleado
-        $empleado->delete();
-
         // Eliminar el usuario relacionado
-        $empleadoUser = EmpleadoUser::where('idEmpleado', $id)->first();
+        $empleadoUser = EmpleadoUser::where('idEmpleado', $empleado->id)->first();
         if ($empleadoUser) {
             $empleadoUser->delete();
         }
 
+        // Eliminar el empleado
+        $empleado->delete();
+
         return redirect()->route('empleados.index')->with('success', 'Empleado eliminado correctamente');
     }
-
-    
-
 
 }

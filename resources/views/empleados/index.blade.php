@@ -1,50 +1,50 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="display-5 font-semibold text-3xl text-center text-black dark:text-white leading-tight">
             {{ __('Lista de Empleados') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="w-full sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+        <div class="container-fluid">
+            <div class="card shadow-lg rounded-lg">
+                <div class="card-body">
                     <!-- Tabla para mostrar los empleados -->
-                    <table class="w-full bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-                        <thead>
-                            <tr class="bg-gray-100 dark:bg-gray-700">
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200 uppercase tracking-wider">Nombre</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200 uppercase tracking-wider">DNI</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200 uppercase tracking-wider">Hora de Entrada</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200 uppercase tracking-wider">Hora de Salida</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200 uppercase tracking-wider">Rol</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200 uppercase tracking-wider">Estado</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200 uppercase tracking-wider">Acciones</th>
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="text-center">{{ __('Nombre') }}</th>
+                                <th class="text-center">{{ __('DNI') }}</th>
+                                <th class="text-center">{{ __('Hora de Entrada') }}</th>
+                                <th class="text-center">{{ __('Hora de Salida') }}</th>
+                                <th class="text-center">{{ __('Rol') }}</th>
+                                <th class="text-center">{{ __('Estado') }}</th>
+                                <th class="text-center">{{ __('Acciones') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($empleados as $empleado)
-                                <tr class="border-b border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-200">{{ $empleado->nombre_apellido }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-200">{{ $empleado->dni }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-200">{{ $empleado->hora_entrada }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-200">{{ $empleado->hora_salida }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-200">{{ $empleado->rol->nombre }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-200">{{ $empleado->estado }}</td>
-                                    <td class="px-6 py-4 text-sm">
-                                        <div class="flex space-x-4">
+                                <tr>
+                                    <td class="text-center">{{ $empleado->nombre_apellido }}</td>
+                                    <td class="text-center">{{ $empleado->dni }}</td>
+                                    <td class="text-center">{{ $empleado->hora_entrada }}</td>
+                                    <td class="text-center">{{ $empleado->hora_salida }}</td>
+                                    <td class="text-center">{{ $empleado->rol->nombre }}</td>
+                                    <td class="text-center">{{ $empleado->estado }}</td>
+                                    <td class="text-center">
+                                        <div class="btn-group">
                                             <!-- Botón Editar -->
-                                            <!-- Enlace para editar un empleado -->
-                                            <a href="{{ route('empleados.edit', $empleado->id) }}" class="btn btn-primary">Editar</a>
-
-
+                                            <a href="{{ route('empleados.edit', $empleado->id) }}" class="btn btn-primary btn-sm mx-1">
+                                                {{ __('Editar') }}
+                                            </a>
                                             <!-- Formulario para eliminar un empleado -->
-                                            <form action="{{ route('empleados.destroy', $empleado->id) }}" method="POST" style="display: inline;">
+                                            <form action="{{ route('empleados.destroy', $empleado->id) }}" method="POST" class="d-inline-block">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este empleado?')">Eliminar</button>
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este empleado?')">
+                                                    {{ __('Eliminar') }}
+                                                </button>
                                             </form>
-
                                         </div>
                                     </td>
                                 </tr>
@@ -52,9 +52,9 @@
                         </tbody>
                     </table>
 
-                    <!-- Paginación -->
-                    <div class="mt-6">
-                        {{ $empleados->links('pagination::simple-tailwind') }}
+                    <!-- Paginación centrada -->
+                    <div class="mt-4 text-center">
+                        {{ $empleados->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
             </div>

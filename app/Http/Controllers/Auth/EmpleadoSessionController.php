@@ -51,8 +51,6 @@ class EmpleadoSessionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    // EmpleadoSessionController.php
-
     public function destroy(Request $request)
     {
         Auth::guard('empleado')->logout(); // Cerrar sesión del empleado
@@ -61,5 +59,4 @@ class EmpleadoSessionController extends Controller
         
         return redirect('/'); // Redirigir a la página principal o login
     }
-
 }

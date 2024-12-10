@@ -59,13 +59,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/empleados', [EmpleadoController::class, 'store'])->name('empleados.store');
 
     // Mostrar el formulario de edición del empleado
-    Route::get('/empleados/{id}/edit', [EmpleadoController::class, 'edit'])->name('empleados.edit');
+    Route::get('/empleados/{empleado}/edit', [EmpleadoController::class, 'edit'])->name('empleados.edit');
 
     // Actualizar los datos del empleado
-    Route::put('/empleados/{id}', [EmpleadoController::class, 'update'])->name('empleados.update');
+    Route::put('/empleados/{empleado}', [EmpleadoController::class, 'update'])->name('empleados.update');
     
     // Eliminar un empleado
-    Route::delete('/empleados/{id}', [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
+    Route::delete('/empleados/{empleado}', [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
 });
 //Fin de Gestion de Empleados
 

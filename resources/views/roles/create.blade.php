@@ -1,30 +1,34 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="display-5 font-semibold text-3xl text-center text-black dark:text-white leading-tight">
             {{ __('Agregar Nuevo Rol') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+        <div class="container-lg">
+            <div class="card shadow-lg rounded-lg">
+                <div class="card-body">
                     <form action="{{ route('roles.store') }}" method="POST">
                         @csrf
-                        <div class="space-y-6">
+                        <div class="space-y-4">
+
+                            <!-- Campo Nombre del Rol -->
                             <div class="form-group">
-                                <label for="nombre" class="text-sm font-medium text-gray-700 dark:text-gray-200">Nombre del Rol</label>
-                                <input type="text" name="nombre" id="nombre" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600" required>
+                                <label for="nombre" class="form-label text-black dark:text-white">{{ __('Nombre del Rol') }}</label>
+                                <input type="text" name="nombre" id="nombre" class="form-control form-control-lg border-2 rounded-lg shadow-sm" required>
                             </div>
 
+                            <!-- Campo Descripción -->
                             <div class="form-group">
-                                <label for="descripcion" class="text-sm font-medium text-gray-700 dark:text-gray-200">Descripción</label>
-                                <textarea name="descripcion" id="descripcion" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600" rows="4" required></textarea>
+                                <label for="descripcion" class="form-label text-black dark:text-white">{{ __('Descripción') }}</label>
+                                <textarea name="descripcion" id="descripcion" class="form-control form-control-lg border-2 rounded-lg shadow-sm" rows="4" required></textarea>
                             </div>
 
-                            <div class="flex justify-end">
-                                <button type="submit" class="px-8 py-3 bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white font-semibold rounded-full shadow-xl transform transition-all hover:from-green-500 hover:via-green-600 hover:to-green-700 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50">
-                                    Agregar Rol
+                            <!-- Botón Enviar -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-success btn-sm w-40 px-5 py-3 rounded-pill shadow-sm hover:shadow-lg focus:ring-4 focus:ring-green-300 mt-3">
+                                    {{ __('Agregar Rol') }}
                                 </button>
                             </div>
                         </div>
