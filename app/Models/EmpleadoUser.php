@@ -1,20 +1,22 @@
 <?php
 
-// EmpleadoUser.php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class EmpleadoUser extends Model
+class EmpleadoUser extends Authenticatable
 {
-    use HasFactory;
+    protected $table = 'empleados_users'; // Nombre de la tabla en la base de datos
+    protected $primaryKey = 'idEmpleado'; // Llave primaria
+    public $timestamps = false;
 
-    protected $table = 'empleados_users';
-    
-    // Asegúrate de que 'idEmpleado' esté en $fillable
-    protected $fillable = ['correo', 'password', 'idEmpleado'];
+    protected $fillable = [
+        'idEmpleado',
+        'correo',
+        'password',
+    ];
 
+    // Relación con el modelo Empleado
     public function empleado()
     {
         return $this->belongsTo(Empleado::class, 'idEmpleado');

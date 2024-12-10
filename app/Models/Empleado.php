@@ -9,6 +9,10 @@ class Empleado extends Model
 {
     use HasFactory;
 
+    protected $table = 'empleados'; // Nombre de la tabla en la base de datos
+    protected $primaryKey = 'id'; // Llave primaria
+    public $timestamps = false;
+
     protected $fillable = [
         'nombre_apellido',
         'dni',
