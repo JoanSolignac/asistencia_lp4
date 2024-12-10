@@ -38,6 +38,29 @@
                         <li><a class="dropdown-item text-black" href="{{ route('empleados.index') }}">{{ __('Mostrar Empleado') }}</a></li>
                     </ul>
                 </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdownAsistencia" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ __('Asistencia') }}
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownAsistencia">
+                        <li>
+                            <a class="dropdown-item text-black" href="{{ route('asistencia.index') }}">
+                                {{ __('General') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-black" href="{{ route('asistencia.entradas') }}">
+                                {{ __('Entradas') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-black" href="{{ route('asistencia.salidas') }}">
+                                {{ __('Salidas') }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
 
             <!-- Settings Dropdown -->

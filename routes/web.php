@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\EmpleadoSessionController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AsistenciaEntradaController;
 use App\Http\Controllers\AsistenciaSalidaController;
+use App\Http\Controllers\AsistenciaController;
 
 Route::middleware(['auth:empleado'])->group(function () {
     Route::post('/registrar-entrada', [AsistenciaEntradaController::class, 'store'])->name('empleadoUser.registrarEntrada');
@@ -76,6 +77,13 @@ Route::middleware('auth')->group(function () {
 });
 //Fin de Gestion de Empleados
 
+
+// Rutas de Asistencia
+Route::prefix('asistencia')->name('asistencia.')->group(function () {
+    Route::get('/', [AsistenciaController::class, 'index'])->name('index'); // Vista general
+    Route::get('/entradas', [AsistenciaEntradaController::class, 'index'])->name('entradas'); // Entradas
+    Route::get('/salidas', [AsistenciaSalidaController::class, 'index'])->name('salidas'); // Salidas
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');

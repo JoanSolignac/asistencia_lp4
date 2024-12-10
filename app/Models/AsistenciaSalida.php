@@ -13,6 +13,11 @@ class AsistenciaSalida extends Model
 
     protected $fillable = ['idEmpleado', 'hora_salida', 'estado'];
 
+    protected $casts = [
+        'hora_salida' => 'datetime',
+    ];
+    
+
     public function empleado()
     {
         return $this->belongsTo(Empleado::class, 'idEmpleado');

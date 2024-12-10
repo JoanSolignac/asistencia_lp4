@@ -11,11 +11,33 @@ class AsistenciaEntradaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        // Obtener filtros de búsqueda
+        $nombreEmpleado = $request->input('nombre');
+        $fecha = $request->input('fecha');
 
+        // Consulta base con relaciones cargadas
+        $query = AsistenciaEntrada::with('empleado');
+
+        // Filtrar por nombre del empleado si está presente
+        if (!empty($nombreEmpleado)) {
+            $query->whereHas('empleado', function ($q) use ($nombreEmpleado) {
+                $q->where('nombre_apellido', 'like', "%$nombreEmpleado%");
+            });
+        }
+
+        // Filtrar por fecha si está presente
+        if (!empty($fecha)) {
+            $query->whereDate('hora_entrada', $fecha);
+        }
+
+        // Obtener resultados paginados
+        $entradas = $query->paginate(10);
+
+        // Retornar la vista con las entradas
+        return view('asistencia.entradas', compact('entradas', 'nombreEmpleado', 'fecha'));
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -30,40 +52,36 @@ class AsistenciaEntradaController extends Controller
     
     public function store(Request $request)
     {
-        // Obtener el id del empleado desde el formulario
-        $empleado_id = $request->input('empleado_id');
-        
-        // Buscar los datos del empleado
+        // Validar el formulario
+        $validated = $request->validate([
+            'empleado_id' => 'required|exists:empleados,id',
+        ]);
+
+        $empleado_id = $validated['empleado_id'];
         $empleado = Empleado::findOrFail($empleado_id);
-        
-        // Obtener la fecha actual
         $fechaHoy = now()->toDateString();
-    
-        // Verificar si ya existe una entrada registrada para el día de hoy
+
+        // Verificar si ya existe una entrada para el día
         $asistenciaHoy = AsistenciaEntrada::where('idEmpleado', $empleado_id)
             ->whereDate('hora_entrada', $fechaHoy)
             ->first();
-    
+
         if ($asistenciaHoy) {
-            // Ya se registró la entrada, mostrar mensaje de error
             return redirect()->route('empleadoUser.dashboard')
                 ->with('error', 'Ya has registrado tu entrada para el día de hoy.');
         }
-    
-        // Obtener la hora actual
+
+        // Determinar el estado (Tardanza o En hora)
         $horaActual = now();
-    
-        // Determinar si es tardanza
         $estado = $horaActual->greaterThan($empleado->hora_entrada) ? 'Tardanza' : 'En hora';
-    
-        // Registrar la entrada con el estado correspondiente
+
+        // Registrar la entrada
         AsistenciaEntrada::create([
-            'idEmpleado' => $empleado_id,  // Usamos el id recibido del formulario
+            'idEmpleado' => $empleado_id,
             'hora_entrada' => $horaActual,
             'estado' => $estado,
         ]);
-    
-        // Notificación de éxito
+
         return redirect()->route('empleadoUser.dashboard')
             ->with('success', 'Entrada registrada correctamente.');
     }

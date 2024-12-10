@@ -11,9 +11,32 @@ class AsistenciaSalidaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // Capturar los parámetros de búsqueda
+        $nombre = $request->input('nombre');
+        $fecha = $request->input('fecha');
+
+        // Consulta base con relaciones
+        $query = AsistenciaSalida::with('empleado');
+
+        // Filtrar por nombre si se proporciona
+        if ($nombre) {
+            $query->whereHas('empleado', function ($q) use ($nombre) {
+                $q->where('nombre_apellido', 'like', '%' . $nombre . '%');
+            });
+        }
+
+        // Filtrar por fecha si se proporciona
+        if ($fecha) {
+            $query->whereDate('hora_salida', $fecha);
+        }
+
+        // Obtener las salidas paginadas con los filtros aplicados
+        $salidas = $query->paginate(10);
+
+        // Retornar la vista con las salidas filtradas
+        return view('asistencia.salidas', compact('salidas'));
     }
 
     /**
