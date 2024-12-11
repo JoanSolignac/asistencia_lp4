@@ -18,13 +18,14 @@
                         }
 
                         .btn-primary:hover {
-                            background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
-                            border-color: #0056b3; /* Borde azul más oscuro */
-                            color: white; /* Texto blanco */
+                            background-color: #0056b3;
+                            border-color: #0056b3;
+                            color: white;
                         }
                     </style>
+
                     <!-- Formulario para editar el rol -->
-                    <form method="POST" action="{{ route('roles.update', $rol->id) }}">
+                    <form id="update-form" method="POST" action="{{ route('roles.update', $rol->id) }}">
                         @csrf
                         @method('PUT')
 
@@ -41,7 +42,7 @@
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-sm">
+                            <button type="button" id="update-button" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-sm">
                                 {{ __('Actualizar') }}
                             </button>
                         </div>
@@ -50,4 +51,30 @@
             </div>
         </div>
     </div>
+
+    <!-- Script de SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const updateButton = document.getElementById('update-button');
+            const updateForm = document.getElementById('update-form');
+
+            updateButton.addEventListener('click', function () {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "Se actualizará la información del rol.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, actualizar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        updateForm.submit();
+                    }
+                });
+            });
+        });
+    </script>
 </x-app-layout>

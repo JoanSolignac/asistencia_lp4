@@ -12,8 +12,8 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-black dark:text-white">
                     <div class="alert alert-success text-center" role="alert">
-                        <h4 class="alert-heading">{{ __("You're logged in!") }}</h4>
-                        <p class="mb-0">{{ __("Welcome back to your dashboard!") }}</p>
+                        <h4 class="alert-heading">{{ __("¡Has iniciado sesión!") }}</h4>
+                        <p class="mb-0">{{ __("¡Bienvenido a tu dashboard!") }}</p>
                     </div>
                 </div>
             </div>

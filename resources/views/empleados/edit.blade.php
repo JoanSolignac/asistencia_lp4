@@ -4,13 +4,26 @@
             {{ __('Editar Empleado') }}
         </h2>
     </x-slot>
+    <!-- Estilo personalizado para el botón -->
+    <style>
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
 
+        .btn-primary:hover {
+            background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+            border-color: #0056b3; /* Borde azul más oscuro */
+            color: white; /* Texto blanco */
+        }
+    </style>
     <div class="py-12">
         <div class="container-lg">
             <div class="card shadow-lg rounded-lg">
                 <div class="card-body">
                     <!-- Formulario para editar un empleado -->
-                    <form method="POST" action="{{ route('empleados.update', $empleado->id) }}" >
+                    <form id="updateForm" method="POST" action="{{ route('empleados.update', $empleado->id) }}">
                         @csrf
                         @method('PUT') <!-- Utilizamos PUT para la actualización -->
                         
@@ -72,8 +85,9 @@
                             <input type="time" id="hora_salida" name="hora_salida" value="{{ old('hora_salida', $empleado->hora_salida) }}" class="form-control" required>
                         </div>
 
+
                         <div class="mb-3">
-                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <button type="submit" class="btn btn-primary btn-lg w-100" id="updateButton">
                                 {{ __('Actualizar Empleado') }}
                             </button>
                         </div>
@@ -82,4 +96,28 @@
             </div>
         </div>
     </div>
+
+    <!-- SweetAlert y script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('updateButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Evitar el envío inmediato del formulario
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: '¿Deseas actualizar la información del empleado?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, actualizar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Enviar el formulario si se confirma
+                    document.getElementById('updateForm').submit();
+                }
+            });
+        });
+    </script>
 </x-app-layout>

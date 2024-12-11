@@ -9,20 +9,7 @@
         <div class="container-fluid">
             <div class="card shadow-lg rounded-lg">
                 <div class="card-body">
-                    <!-- Mensajes de notificación -->
-                    @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
 
-                    @if(session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
                     <!-- Estilo personalizado para el botón -->
                     <style>
                         .btn-primary {
@@ -32,11 +19,12 @@
                         }
 
                         .btn-primary:hover {
-                            background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
-                            border-color: #0056b3; /* Borde azul más oscuro */
-                            color: white; /* Texto blanco */
+                            background-color: #0056b3;
+                            border-color: #0056b3;
+                            color: white;
                         }
                     </style>
+
                     <!-- Formulario de búsqueda y botones en la misma línea -->
                     <div class="d-flex justify-content-between mb-4 w-100">
                         <!-- Formulario de búsqueda -->
@@ -57,13 +45,13 @@
                         </form>
 
                         <!-- Botón de reporte -->
-                        <a href="{{ route('asistencia.reporteentrada', ['nombre' => request('nombre'), 'fecha' => request('fecha')]) }}" 
-                        class="btn btn-danger btn-sm shadow-sm mx-2">
+                        <a href="#" 
+                           id="reportePDF" 
+                           class="btn btn-danger btn-sm shadow-sm mx-2">
                             {{ __('Reporte PDF') }}
                         </a>
 
                     </div>
-
 
                     <!-- Tabla de entradas -->
                     <table class="table table-striped table-bordered table-hover align-middle">
@@ -103,4 +91,26 @@
             </div>
         </div>
     </div>
+
+    <!-- SweetAlert y script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // SweetAlert para el botón de Reporte PDF
+        document.getElementById('reportePDF').addEventListener('click', function(event) {
+            event.preventDefault(); // Evita la redirección inmediata
+
+            Swal.fire({
+                title: '¡Reporte de Entrada Generado!',
+                text: 'El reporte PDF se está generando. Descargando ahora...',
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+                confirmButtonColor: '#3085d6'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirigir al enlace del reporte
+                    window.location.href = "{{ route('asistencia.reporteentrada', ['nombre' => request('nombre'), 'fecha' => request('fecha')]) }}";
+                }
+            });
+        });
+    </script>
 </x-app-layout>

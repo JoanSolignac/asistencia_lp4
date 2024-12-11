@@ -56,52 +56,75 @@ class AsistenciaSalidaController extends Controller
     {
         // Obtener el id del empleado desde el formulario
         $empleado_id = $request->input('empleado_id');
-
+    
         // Buscar los datos del empleado
         $empleado = Empleado::findOrFail($empleado_id);
-
+    
         // Obtener la fecha de hoy
         $fechaHoy = now()->toDateString(); // Solo la fecha sin hora
-
+    
+        // Verificar si ya existe una salida registrada para el empleado el día de hoy
+        $salidaHoy = AsistenciaSalida::where('idEmpleado', $empleado_id)
+            ->whereDate('created_at', $fechaHoy) // Comparar solo la fecha
+            ->first();
+    
+        // Si ya existe una salida para el día de hoy
+        if ($salidaHoy) {
+            return redirect()->route('empleadoUser.dashboard')
+                ->with([
+                    'alert' => [
+                        'type' => 'error',
+                        'title' => 'Ya registrada',
+                        'text' => 'Ya has registrado tu salida para el día de hoy.',
+                    ],
+                ]);
+        }
+    
         // Verificar si ya existe una entrada registrada para el empleado el día de hoy
         $entradaHoy = AsistenciaEntrada::where('idEmpleado', $empleado_id)
             ->whereDate('created_at', $fechaHoy) // Comparar solo la fecha
             ->first();
-
-
+    
         // Si no existe entrada para el día de hoy, no permitir registrar la salida
         if (!$entradaHoy) {
             return redirect()->route('empleadoUser.dashboard')
-                ->with('error', 'No se puede registrar la salida porque no se ha registrado una entrada hoy.');
+                ->with([
+                    'alert' => [
+                        'type' => 'error',
+                        'title' => 'Error',
+                        'text' => 'No se puede registrar la salida porque no se ha registrado una entrada hoy.',
+                    ],
+                ]);
         }
-
+    
         // Obtener la hora actual
         $horaActual = now();
-
+    
         // Determinar si la salida fue antes o después de la hora de salida esperada
         if ($horaActual->greaterThan($empleado->hora_salida)) {
             $estado = 'Después de la hora';
         } else {
             $estado = 'Antes de la hora';
         }
-
+    
         // Registrar la salida con el estado correspondiente
         AsistenciaSalida::create([
-            'idEmpleado' => $empleado_id,  // Usamos el id recibido del formulario
+            'idEmpleado' => $empleado_id,
             'hora_salida' => $horaActual,
             'estado' => $estado,
         ]);
-
-        // Retornar un mensaje descriptivo según el estado
-        $mensaje = $estado === 'Después de la hora' 
-            ? 'Salida registrada: Después de la hora.' 
-            : 'Salida registrada: Antes de la hora.';
-
-        return redirect()->route('empleadoUser.dashboard')->with('success', $mensaje);
-}
-
-
-
+    
+        // Mensaje de éxito con estado
+        return redirect()->route('empleadoUser.dashboard')
+            ->with([
+                'alert' => [
+                    'type' => 'success',
+                    'title' => '¡Salida Registrada!',
+                    'text' => "Se ha registrado tu salida del día de hoy como: \"{$estado}\".",
+                ],
+            ]);
+    }
+    
 
     /**
      * Display the specified resource.

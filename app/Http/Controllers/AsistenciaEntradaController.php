@@ -56,43 +56,55 @@ class AsistenciaEntradaController extends Controller
      * Store a newly created resource in storage.
      */
     
-    public function store(Request $request, Empleado $empleado)
-    {
-        // Validar el formulario
-        $validated = $request->validate([
-            'empleado_id' => 'required|exists:empleados,id',
-        ]);
-
-        $empleado_id = $validated['empleado_id'];
-        $empleado = Empleado::findOrFail($empleado_id);
-        $fechaHoy = now()->toDateString();
-
-
-        // Verificar si ya existe una entrada para el día
-        $asistenciaHoy = AsistenciaEntrada::where('idEmpleado', $empleado_id)
-            ->whereDate('created_at', $fechaHoy)
-            ->first();
-        
-
-        if ($asistenciaHoy) {
-            return redirect()->route('empleadoUser.dashboard')
-                ->with('error', 'Ya has registrado tu entrada para el día de hoy.');
-        }
-
-        // Determinar el estado (Tardanza o En hora)
-        $horaActual = now();
-        $estado = $horaActual->greaterThan($empleado->hora_entrada) ? 'Tardanza' : 'En hora';
-
-        // Registrar la entrada
-        AsistenciaEntrada::create([
-            'idEmpleado' => $empleado_id,
-            'hora_entrada' => $horaActual,
-            'estado' => $estado,
-        ]);
-
-        return redirect()->route('empleadoUser.dashboard')
-            ->with('success', 'Entrada registrada correctamente.');
-    }
+     public function store(Request $request)
+     {
+         // Validar el formulario
+         $validated = $request->validate([
+             'empleado_id' => 'required|exists:empleados,id',
+         ]);
+     
+         $empleado_id = $validated['empleado_id'];
+         $empleado = Empleado::findOrFail($empleado_id);
+         $fechaHoy = now()->toDateString();
+     
+         // Verificar si ya existe una entrada para el día
+         $asistenciaHoy = AsistenciaEntrada::where('idEmpleado', $empleado_id)
+             ->whereDate('created_at', $fechaHoy)
+             ->first();
+     
+         if ($asistenciaHoy) {
+             return redirect()->route('empleadoUser.dashboard')
+                 ->with([
+                     'alert' => [
+                         'type' => 'error',
+                         'title' => 'Ya registrado',
+                         'text' => 'Ya has registrado tu entrada para el día de hoy.',
+                     ],
+                 ]);
+         }
+     
+         // Determinar el estado (Tardanza o En hora)
+         $horaActual = now();
+         $estado = $horaActual->greaterThan($empleado->hora_entrada) ? 'Tardanza' : 'En hora';
+     
+         // Registrar la entrada
+         AsistenciaEntrada::create([
+             'idEmpleado' => $empleado_id,
+             'hora_entrada' => $horaActual,
+             'estado' => $estado,
+         ]);
+     
+         // Mensaje de éxito con estado
+         return redirect()->route('empleadoUser.dashboard')
+             ->with([
+                 'alert' => [
+                     'type' => 'success',
+                     'title' => '¡Asistencia Registrada!',
+                     'text' => "Se ha registrado tu asistencia el día de hoy como: \"{$estado}\".",
+                 ],
+             ]);
+     }
+     
     
 
     /**

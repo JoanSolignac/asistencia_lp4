@@ -45,17 +45,16 @@
                                                     border-color: #bd2130; /* Borde rojo más oscuro */
                                                     color: white; /* Texto blanco */
                                                 }
-
                                             </style>
                                             <!-- Botón Editar -->
                                             <a href="{{ route('empleados.edit', $empleado->id) }}" class="btn btn-primary btn-sm mx-1">
                                                 {{ __('Editar') }}
                                             </a>
                                             <!-- Formulario para eliminar un empleado -->
-                                            <form action="{{ route('empleados.destroy', $empleado->id) }}" method="POST" class="d-inline-block">
+                                            <form action="{{ route('empleados.destroy', $empleado->id) }}" method="POST" class="d-inline-block delete-form">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este empleado?')">
+                                                <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="{{ $empleado->id }}">
                                                     {{ __('Eliminar') }}
                                                 </button>
                                             </form>
@@ -74,4 +73,34 @@
             </div>
         </div>
     </div>
+
+    <!-- SweetAlert y script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const form = this.closest('.delete-form');
+                    const empleadoId = this.getAttribute('data-id');
+
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: `Esto eliminará al empleado con ID ${empleadoId}. ¡Esta acción no se puede deshacer!`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </x-app-layout>

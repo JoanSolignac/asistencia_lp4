@@ -24,7 +24,7 @@
                     <!-- Welcome Section -->
                     <div class="alert alert-success text-center" role="alert">
                         <h4 class="alert-heading">
-                            {{ __("Bienvenido, :name!", ['name' => $empleado->nombre_apellido]) }}
+                            {{ __("¡Bienvenido, :name!", ['name' => $empleado->nombre_apellido]) }}
                         </h4>
                         <p class="mb-0">
                             {{ __("Este es tu espacio de trabajo en el sistema de empleados.") }}

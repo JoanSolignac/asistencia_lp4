@@ -174,6 +174,12 @@
                     <td>Total de empleados</td>
                     <td class="total-column"><strong>{{ $totalEmpleados }}</strong></td>
                 </tr>
+
+                <tr>
+                    <td><strong>Entradas</strong></td>
+                    <td></td>
+                </tr>
+        
                 <tr>
                     <td>Empleados en hora</td>
                     <td class="total-column"><strong>{{ $empleadosEnHora }}</strong></td>
@@ -182,6 +188,12 @@
                     <td>Empleados con tardanza</td>
                     <td class="total-column"><strong>{{ $empleadosTarde }}</strong></td>
                 </tr>
+
+                <tr>
+                    <td><strong>Salidas</strong></td>
+                    <td></td>
+                </tr>
+
                 <tr>
                     <td>Empleados no registran salida</td>
                     <td class="total-column"><strong>{{ $empleadosNoRegistraSalida }}</strong></td>

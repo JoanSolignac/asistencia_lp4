@@ -12,7 +12,7 @@
                     <h4 class="mb-0">Formulario de Nuevo Empleado</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('empleados.store') }}" method="POST">
+                    <form id="empleado-form" action="{{ route('empleados.store') }}" method="POST">
                         @csrf
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -71,13 +71,13 @@
                             }
 
                             .btn-primary:hover {
-                                background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
-                                border-color: #0056b3; /* Borde azul más oscuro */
-                                color: white; /* Texto blanco */
+                                background-color: #0056b3;
+                                border-color: #0056b3;
+                                color: white;
                             }
                         </style>
                         <div class="mt-4 text-end">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="button" id="add-employee-btn" class="btn btn-primary">
                                 Agregar Empleado
                             </button>
                         </div>
@@ -86,4 +86,30 @@
             </div>
         </div>
     </div>
+
+    <!-- Script de SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const addButton = document.getElementById('add-employee-btn');
+            const form = document.getElementById('empleado-form');
+
+            addButton.addEventListener('click', function () {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "Se agregará un nuevo empleado.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, agregar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
 </x-app-layout>

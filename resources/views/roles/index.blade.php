@@ -1,5 +1,4 @@
 <x-app-layout>
-
     <x-slot name="header">
         <h1 class="display-5 text-center text-black bg-light">
             {{ __('Listado de Roles') }}
@@ -10,18 +9,18 @@
         <div class="container-fluid">
             <div class="card shadow-lg rounded-lg">
                 <div class="card-body">
-                    <!-- Estilo personalizado para el botón -->
+                    <!-- Estilo personalizado para los botones -->
                     <style>
                         .btn-danger {
-                            background-color: #dc3545; /* Color rojo de inicio */
-                            border-color: #dc3545; /* Borde rojo de inicio */
-                            color: white; /* Texto blanco */
+                            background-color: #dc3545;
+                            border-color: #dc3545;
+                            color: white;
                         }
 
                         .btn-danger:hover {
-                            background-color: #c82333; /* Rojo más intenso al pasar el mouse */
-                            border-color: #bd2130; /* Borde rojo más oscuro */
-                            color: white; /* Texto blanco */
+                            background-color: #c82333;
+                            border-color: #bd2130;
+                            color: white;
                         }
 
                         .btn-primary {
@@ -31,22 +30,19 @@
                         }
 
                         .btn-primary:hover {
-                            background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
-                            border-color: #0056b3; /* Borde azul más oscuro */
-                            color: white; /* Texto blanco */
-
-                        
+                            background-color: #0056b3;
+                            border-color: #0056b3;
+                            color: white;
                         }
                     </style>
+
+                    <!-- Formulario de búsqueda -->
                     <form method="GET" action="{{ route('roles.index') }}" class="mb-6 d-flex justify-content-center align-items-center w-75 mx-auto">
-                        <!-- Campo de texto para buscar el rol -->
                         <div class="flex-grow mx-2 w-50">
                             <input type="text" name="role-search" id="role-search" value="{{ request('role-search') }}" 
                                 class="form-control form-control-lg rounded-3 border-secondary bg-light text-black shadow-sm" 
                                 placeholder="Escribe un nombre de rol para buscar...">
                         </div>
-
-                        <!-- Botón de búsqueda -->
                         <button type="submit" class="btn btn-primary btn-lg shadow-sm hover:shadow-lg transition duration-200 transform hover:scale-105 mx-2">
                             {{ __('Buscar') }}
                         </button>
@@ -75,11 +71,11 @@
                                                 {{ __('Editar') }}
                                             </a>
 
-                                            <!-- Botón Eliminar -->
-                                            <form action="{{ route('roles.destroy', $rol->id) }}" method="POST" class="d-inline">
+                                            <!-- Botón Eliminar con SweetAlert -->
+                                            <form action="{{ route('roles.destroy', $rol->id) }}" method="POST" class="d-inline delete-form">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger text-white shadow-sm hover:shadow-lg" onclick="return confirm('¿Estás seguro de eliminar este rol?')">>
+                                                <button type="button" class="btn btn-sm btn-danger text-white shadow-sm hover:shadow-lg delete-button">
                                                     {{ __('Eliminar') }}
                                                 </button>
                                             </form>
@@ -98,4 +94,34 @@
             </div>
         </div>
     </div>
+
+    <!-- Script de SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteButtons = document.querySelectorAll('.delete-button');
+            
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const form = this.closest('.delete-form');
+
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "Esta acción no se puede deshacer.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </x-app-layout>

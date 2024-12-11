@@ -1,3 +1,9 @@
+@php
+    // Verifica si ya existe al menos un usuario en la base de datos
+    $userExist = \App\Models\User::exists(); // Esto devolverá true si hay usuarios
+@endphp
+
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -187,24 +193,27 @@
                                             <div class="py-1">
                                                 <!-- Admin Login Option -->
                                                 <a href="{{ route('login') }}"
-                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                                                     Admin
                                                 </a>
                                                 <!-- Employee Login Option -->
                                                 <a href="{{ route('empleados.login') }}"
-                                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                                                     Empleado
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
-                                    @if (Route::has('register'))
-                                        <a
-                                            href="{{ route('register') }}"
-                                            class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                        >
-                                            Register
-                                        </a>
+                                    <!-- Verifica si ya existen usuarios, solo mostrar el enlace de registro si no hay usuarios -->
+                                    @if (!$userExist)
+                                        @if (Route::has('register'))
+                                            <a
+                                                href="{{ route('register') }}"
+                                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                            >
+                                                Register
+                                            </a>
+                                        @endif
                                     @endif
                                 @endauth
                             </nav>

@@ -18,9 +18,9 @@
                         }
 
                         .btn-primary:hover {
-                            background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
-                            border-color: #0056b3; /* Borde azul más oscuro */
-                            color: white; /* Texto blanco */
+                            background-color: #0056b3;
+                            border-color: #0056b3;
+                            color: white;
                         }
                     </style>
 
@@ -39,7 +39,8 @@
                         <button type="submit" class="btn btn-primary btn-lg shadow-sm mx-2">
                             {{ __('Buscar') }}
                         </button>
-                        <a href="{{ route('asistencia.reporte', ['nombre' => request('nombre'), 'fecha' => request('fecha')]) }}" 
+                        <a href="#" 
+                           id="reportePDF"
                            class="btn btn-danger btn-lg shadow-sm mx-2">
                             {{ __('Reporte PDF') }}
                         </a>
@@ -83,4 +84,25 @@
             </div>
         </div>
     </div>
+
+    <!-- SweetAlert y script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('reportePDF').addEventListener('click', function(event) {
+            event.preventDefault(); // Evita la redirección inmediata
+
+            Swal.fire({
+                title: '¡Reporte General Generado!',
+                text: 'El reporte PDF se ha creado satisfactoriamente. Descargando ahora...',
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Aceptar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirigir al enlace del reporte
+                    window.location.href = "{{ route('asistencia.reporte', ['nombre' => request('nombre'), 'fecha' => request('fecha')]) }}";
+                }
+            });
+        });
+    </script>
 </x-app-layout>

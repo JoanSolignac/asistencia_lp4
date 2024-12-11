@@ -9,14 +9,18 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        <!-- Scripts -->
+        <!-- SweetAlert -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <!-- App CSS and JS -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+            <!-- Navigation -->
             @include('layouts.navigation-empleado')
 
             <!-- Page Heading -->
@@ -33,6 +37,22 @@
                 {{ $slot }}
             </main>
         </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+        <!-- SweetAlert2 Notifications -->
+        @if(session('alert'))
+            <script>
+                Swal.fire({
+                    icon: '{{ session("alert.type") }}', // 'success' o 'error'
+                    title: '{{ session("alert.title") }}',
+                    text: '{{ session("alert.text") }}',
+                    confirmButtonText: 'Aceptar',
+                    timer: 6000, // Tiempo para que se cierre automáticamente
+                    timerProgressBar: true, // Barra de progreso visual
+                });
+            </script>
+        @endif
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

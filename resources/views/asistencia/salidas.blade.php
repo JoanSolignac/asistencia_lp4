@@ -9,18 +9,7 @@
         <div class="container-fluid">
             <div class="card shadow-lg rounded-lg">
                 <div class="card-body">
-                    <!-- Mensajes de notificación -->
-                    @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
 
-                    @if(session('error'))
-                        <div class="alert alert-danger">
-                            {{ session('error') }}
-                        </div>
-                    @endif
                     <!-- Estilo personalizado para el botón -->
                     <style>
                         .btn-primary {
@@ -30,62 +19,98 @@
                         }
 
                         .btn-primary:hover {
-                            background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
-                            border-color: #0056b3; /* Borde azul más oscuro */
-                            color: white; /* Texto blanco */
+                            background-color: #0056b3;
+                            border-color: #0056b3;
+                            color: white;
                         }
                     </style>
-                    <!-- Formulario de búsqueda -->
-                    <form method="GET" action="{{ route('asistencia.salidas') }}" class="mb-4 d-flex flex-wrap justify-content-center">
-                        <div class="form-group mx-2" style="flex: 1; max-width: 80%;">
-                            <input type="text" name="nombre" value="{{ request('nombre') }}" 
-                                   class="form-control form-control-lg rounded-3 border-secondary bg-light text-black shadow-sm w-100"
-                                   placeholder="Buscar por nombre del empleado...">
-                        </div>
-                        <div class="form-group mx-2" style="flex: 1; max-width: 20%;">
-                            <input type="date" name="fecha" value="{{ request('fecha') }}" 
-                                   class="form-control form-control-lg rounded-3 border-secondary bg-light text-black shadow-sm w-100"
-                                   placeholder="Buscar por fecha...">
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg shadow-sm mx-2">
-                            {{ __('Buscar') }}
-                        </button>
-                        <a href="{{ route('asistencia.reportesalida', ['nombre' => request('nombre'), 'fecha' => request('fecha')]) }}" 
-                           class="btn btn-danger btn-lg shadow-sm mx-2">
+
+                    <!-- Formulario de búsqueda y botones en la misma línea -->
+                    <div class="d-flex justify-content-between mb-4 w-100">
+                        <!-- Formulario de búsqueda -->
+                        <form method="GET" action="{{ route('asistencia.salidas') }}" class="d-flex w-100">
+                            <div class="form-group mx-2" style="flex: 1; max-width: 75%;">
+                                <input type="text" name="nombre" value="{{ request('nombre') }}" 
+                                    class="form-control form-control-lg rounded-3 border-secondary bg-light text-black shadow-sm w-100"
+                                    placeholder="Buscar por nombre del empleado...">
+                            </div>
+                            <div class="form-group mx-2" style="flex: 1; max-width: 20%;">
+                                <input type="date" name="fecha" value="{{ request('fecha') }}" 
+                                    class="form-control form-control-lg rounded-3 border-secondary bg-light text-black shadow-sm w-100"
+                                    placeholder="Buscar por fecha...">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg shadow-sm mx-2">
+                                {{ __('Buscar') }}
+                            </button>
+                        </form>
+
+                        <!-- Botón de reporte -->
+                        <a href="#" 
+                           id="reportePDF" 
+                           class="btn btn-danger btn-sm shadow-sm mx-2">
                             {{ __('Reporte PDF') }}
                         </a>
-                    </form>
+
+                    </div>
 
                     <!-- Tabla de salidas -->
-                    <table class="table table-striped table-bordered table-hover">
+                    <table class="table table-striped table-bordered table-hover align-middle">
                         <thead class="thead-dark">
-                            <tr>
-                                <th class="text-center">{{ __('ID Salida') }}</th>
-                                <th class="text-center">{{ __('Empleado') }}</th>
-                                <th class="text-center">{{ __('Hora de Salida') }}</th>
-                                <th class="text-center">{{ __('Estado') }}</th>
-                                <th class="text-center">{{ __('Fecha de Salida') }}</th> <!-- Fecha de Salida -->
+                            <tr class="text-center">
+                                <th>{{ __('ID Salida') }}</th>
+                                <th>{{ __('Empleado') }}</th>
+                                <th>{{ __('Hora de Salida') }}</th>
+                                <th>{{ __('Estado') }}</th>
+                                <th>{{ __('Fecha de Salida') }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($salidas as $salida)
-                                <tr>
-                                    <td class="text-center">{{ $salida->id }}</td>
-                                    <td class="text-center">{{ $salida->empleado->nombre_apellido }}</td>
-                                    <td class="text-center">{{ $salida->hora_salida->format('H:i:s') }}</td>
-                                    <td class="text-center">{{ $salida->estado }}</td>
-                                    <td class="text-center">{{ $salida->created_at->format('d/m/Y') }}</td> <!-- Fecha de Salida -->
+                            @forelse($salidas as $salida)
+                                <tr class="text-center">
+                                    <td>{{ $salida->id }}</td>
+                                    <td>{{ $salida->empleado->nombre_apellido }}</td>
+                                    <td>{{ $salida->hora_salida->format('H:i:s') }}</td>
+                                    <td>{{ $salida->estado }}</td>
+                                    <td class="text-center">{{ $salida->created_at->format('d/m/Y') }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">
+                                        {{ __('No hay registros de salida disponibles.') }}
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
 
                     <!-- Paginación centrada -->
-                    <div class="mt-4 text-center">
+                    <div class="mt-4 d-flex justify-content-center">
                         {{ $salidas->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- SweetAlert y script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // SweetAlert para el botón de Reporte PDF
+        document.getElementById('reportePDF').addEventListener('click', function(event) {
+            event.preventDefault(); // Evita la redirección inmediata
+
+            Swal.fire({
+                title: '¡Reporte de Salida Generado!',
+                text: 'El reporte PDF se está generando. Descargando ahora...',
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+                confirmButtonColor: '#3085d6'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirigir al enlace del reporte
+                    window.location.href = "{{ route('asistencia.reportesalida', ['nombre' => request('nombre'), 'fecha' => request('fecha')]) }}";
+                }
+            });
+        });
+    </script>
 </x-app-layout>

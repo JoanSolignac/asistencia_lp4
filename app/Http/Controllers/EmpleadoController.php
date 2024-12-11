@@ -62,9 +62,6 @@ class EmpleadoController extends Controller
         ]);
 
 
-            // Mostrar notificación antes de redirigir
-        notify()->success('Empleado agregado correctamente');
-
         // Redirigir con mensaje de éxito
         return redirect()->route('empleados.index');
     }
@@ -114,9 +111,8 @@ class EmpleadoController extends Controller
         $empleado->update($validated);
 
         // Redirigir con mensaje de éxito
-        session()->flash('success', 'Empleado actualizado exitosamente.');
-
-        return redirect()->route('empleados.index');
+        // Redirigir con mensaje de éxito
+        return redirect()->route('empleados.index')->with('success', 'Empleado agregado correctamente');
     }
 
 
