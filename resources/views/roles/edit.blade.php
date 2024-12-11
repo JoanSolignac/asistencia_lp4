@@ -9,6 +9,20 @@
         <div class="container">
             <div class="card shadow-lg rounded-lg">
                 <div class="card-body">
+                    <!-- Estilo personalizado para el botón -->
+                    <style>
+                        .btn-primary {
+                            background-color: #007bff;
+                            border-color: #007bff;
+                            color: white;
+                        }
+
+                        .btn-primary:hover {
+                            background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+                            border-color: #0056b3; /* Borde azul más oscuro */
+                            color: white; /* Texto blanco */
+                        }
+                    </style>
                     <!-- Formulario para editar el rol -->
                     <form method="POST" action="{{ route('roles.update', $rol->id) }}">
                         @csrf

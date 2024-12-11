@@ -63,6 +63,19 @@
                                 <input type="time" name="hora_salida" id="hora_salida" class="form-control" required>
                             </div>
                         </div>
+                        <style>
+                            .btn-primary {
+                                background-color: #007bff;
+                                border-color: #007bff;
+                                color: white;
+                            }
+
+                            .btn-primary:hover {
+                                background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+                                border-color: #0056b3; /* Borde azul más oscuro */
+                                color: white; /* Texto blanco */
+                            }
+                        </style>
                         <div class="mt-4 text-end">
                             <button type="submit" class="btn btn-primary">
                                 Agregar Empleado

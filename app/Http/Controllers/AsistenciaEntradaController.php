@@ -16,30 +16,34 @@ class AsistenciaEntradaController extends Controller
     public function index(Request $request)
     {
         // Obtener filtros de búsqueda
-        $nombreEmpleado = $request->input('nombre');
+        $nombre = $request->input('nombre');
         $fecha = $request->input('fecha');
 
+        
         // Consulta base con relaciones cargadas
         $query = AsistenciaEntrada::with('empleado');
-
+    
         // Filtrar por nombre del empleado si está presente
-        if (!empty($nombreEmpleado)) {
-            $query->whereHas('empleado', function ($q) use ($nombreEmpleado) {
-                $q->where('nombre_apellido', 'like', "%$nombreEmpleado%");
+        if ($nombre) {
+            $query->whereHas('empleado', function ($q) use ($nombre) {
+                $q->where('nombre_apellido', 'like','%' . $nombre . '%');
             });
         }
-
-        // Filtrar por fecha si está presente
-        if (!empty($fecha)) {
-            $query->whereDate('hora_entrada', $fecha);
+    
+        // Filtrar por fecha si está presente utilizando 'created_at' para obtener la fecha de entrada
+        if ($fecha) {
+            $query->whereDate('created_at', $fecha);  // Aseguramos que se utilice 'created_at' para filtrar por la fecha completa
         }
-
-        // Obtener resultados paginados
+    
+        // Obtener resultados paginados de las entradas
         $entradas = $query->paginate(10);
 
-        // Retornar la vista con las entradas
-        return view('asistencia.entradas', compact('entradas', 'nombreEmpleado', 'fecha'));
+    
+        // Retornar la vista con las entradas, sin que se combinen las fechas de entrada
+        return view('asistencia.entradas', compact('entradas'));
     }
+    
+
     /**
      * Show the form for creating a new resource.
      */
@@ -52,7 +56,7 @@ class AsistenciaEntradaController extends Controller
      * Store a newly created resource in storage.
      */
     
-    public function store(Request $request)
+    public function store(Request $request, Empleado $empleado)
     {
         // Validar el formulario
         $validated = $request->validate([
@@ -63,10 +67,12 @@ class AsistenciaEntradaController extends Controller
         $empleado = Empleado::findOrFail($empleado_id);
         $fechaHoy = now()->toDateString();
 
+
         // Verificar si ya existe una entrada para el día
         $asistenciaHoy = AsistenciaEntrada::where('idEmpleado', $empleado_id)
-            ->whereDate('hora_entrada', $fechaHoy)
+            ->whereDate('created_at', $fechaHoy)
             ->first();
+        
 
         if ($asistenciaHoy) {
             return redirect()->route('empleadoUser.dashboard')
@@ -121,66 +127,36 @@ class AsistenciaEntradaController extends Controller
         //
     }
 
-
-
-    
-    // Método para generar el reporte PDF
     public function generarReporteEntrada(Request $request)
 {
-    // Filtrar por nombre y fecha
-    $nombreEmpleado = $request->input('nombre');
+    // Capturar los parámetros de búsqueda (si los hay)
+    $nombre = $request->input('nombre');
     $fecha = $request->input('fecha');
-    
-    // Consultar las entradas de asistencia
-    $entradasQuery = AsistenciaEntrada::query()->with('empleado');
 
-    if ($nombreEmpleado) {
-        $entradasQuery->whereHas('empleado', function ($q) use ($nombreEmpleado) {
-            $q->where('nombre_apellido', 'like', '%' . $nombreEmpleado . '%');
+    // Consulta base con relaciones
+    $query = AsistenciaEntrada::with('empleado');
+
+    // Filtrar por nombre si se proporciona
+    if ($nombre) {
+        $query->whereHas('empleado', function ($q) use ($nombre) {
+            $q->where('nombre_apellido', 'like', '%' . $nombre . '%');
         });
     }
 
+    // Filtrar por fecha si se proporciona
     if ($fecha) {
-        $entradasQuery->whereDate('hora_entrada', $fecha);
+        $query->whereDate('hora_entrada', $fecha);
     }
 
-    $entradas = $entradasQuery->get();
+    // Obtener los resultados de la consulta
+    $entradas = $query->get();
 
-    // Consultar las salidas de asistencia (si es necesario para incluir en el reporte)
-    $salidasQuery = AsistenciaSalida::query()->with('empleado');
-    
-    if ($nombreEmpleado) {
-        $salidasQuery->whereHas('empleado', function ($q) use ($nombreEmpleado) {
-            $q->where('nombre_apellido', 'like', '%' . $nombreEmpleado . '%');
-        });
-    }
+    // Generar el PDF a partir de la vista 'asistencia.reporteentrada'
+    $pdf = Pdf::loadView('asistencia.reporteentrada', compact('entradas'));
 
-    if ($fecha) {
-        $salidasQuery->whereDate('hora_salida', $fecha);
-    }
-
-    $salidas = $salidasQuery->get();
-
-    // Combinar las entradas y salidas por empleado
-    $asistencias = $entradas->map(function ($entrada) use ($salidas) {
-        $salida = $salidas->firstWhere('idEmpleado', $entrada->idEmpleado);
-        return [
-            'idEntrada' => $entrada->id,
-            'empleadoNombre' => $entrada->empleado->nombre_apellido,
-            'horaEntrada' => $entrada->hora_entrada,
-            'estadoEntrada' => $entrada->estado,
-            'fechaEntrada' => $entrada->hora_entrada->format('Y-m-d'),
-            'horaSalida' => $salida ? $salida->hora_salida : null,
-            'estadoSalida' => $salida ? $salida->estado : null,
-            'fechaSalida' => $salida ? $salida->hora_salida->format('Y-m-d') : null
-        ];
-    });
-
-    // Generar el PDF
-    $pdf = Pdf::loadView('asistencia.reporteentrada', ['asistencias' => $asistencias]);
-
-    // Descargar el archivo
+    // Retornar el PDF como respuesta para descarga
     return $pdf->download('reporte_entradas.pdf');
 }
+
 
 }

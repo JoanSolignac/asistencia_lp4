@@ -10,7 +10,34 @@
         <div class="container-fluid">
             <div class="card shadow-lg rounded-lg">
                 <div class="card-body">
+                    <!-- Estilo personalizado para el botón -->
+                    <style>
+                        .btn-danger {
+                            background-color: #dc3545; /* Color rojo de inicio */
+                            border-color: #dc3545; /* Borde rojo de inicio */
+                            color: white; /* Texto blanco */
+                        }
 
+                        .btn-danger:hover {
+                            background-color: #c82333; /* Rojo más intenso al pasar el mouse */
+                            border-color: #bd2130; /* Borde rojo más oscuro */
+                            color: white; /* Texto blanco */
+                        }
+
+                        .btn-primary {
+                            background-color: #007bff;
+                            border-color: #007bff;
+                            color: white;
+                        }
+
+                        .btn-primary:hover {
+                            background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+                            border-color: #0056b3; /* Borde azul más oscuro */
+                            color: white; /* Texto blanco */
+
+                        
+                        }
+                    </style>
                     <form method="GET" action="{{ route('roles.index') }}" class="mb-6 d-flex justify-content-center align-items-center w-75 mx-auto">
                         <!-- Campo de texto para buscar el rol -->
                         <div class="flex-grow mx-2 w-50">

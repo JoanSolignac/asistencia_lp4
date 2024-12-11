@@ -28,6 +28,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Usar el helper notify() para mostrar una notificación
+        notify()->success('¡Laravel Notify es increíble!');
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

@@ -23,7 +23,20 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
+                    <!-- Estilo personalizado para el botón -->
+                    <style>
+                        .btn-primary {
+                            background-color: #007bff;
+                            border-color: #007bff;
+                            color: white;
+                        }
 
+                        .btn-primary:hover {
+                            background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+                            border-color: #0056b3; /* Borde azul más oscuro */
+                            color: white; /* Texto blanco */
+                        }
+                    </style>
                     <!-- Formulario de búsqueda y botones en la misma línea -->
                     <div class="d-flex justify-content-between mb-4 w-100">
                         <!-- Formulario de búsqueda -->
@@ -70,7 +83,7 @@
                                     <td>{{ $entrada->empleado->nombre_apellido }}</td>
                                     <td>{{ $entrada->hora_entrada->format('H:i:s') }}</td>
                                     <td>{{ $entrada->estado }}</td>
-                                    <td>{{ $entrada->hora_entrada->toDateString() }}</td>
+                                    <td class="text-center">{{ $entrada->created_at->format('d/m/Y') }}</td>
                                 </tr>
                             @empty
                                 <tr>

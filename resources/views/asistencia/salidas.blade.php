@@ -21,7 +21,20 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                    
+                    <!-- Estilo personalizado para el botón -->
+                    <style>
+                        .btn-primary {
+                            background-color: #007bff;
+                            border-color: #007bff;
+                            color: white;
+                        }
+
+                        .btn-primary:hover {
+                            background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+                            border-color: #0056b3; /* Borde azul más oscuro */
+                            color: white; /* Texto blanco */
+                        }
+                    </style>
                     <!-- Formulario de búsqueda -->
                     <form method="GET" action="{{ route('asistencia.salidas') }}" class="mb-4 d-flex flex-wrap justify-content-center">
                         <div class="form-group mx-2" style="flex: 1; max-width: 80%;">

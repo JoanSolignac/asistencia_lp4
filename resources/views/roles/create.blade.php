@@ -24,7 +24,20 @@
                                 <label for="descripcion" class="form-label text-black dark:text-white">{{ __('Descripción') }}</label>
                                 <textarea name="descripcion" id="descripcion" class="form-control form-control-lg border-2 rounded-lg shadow-sm" rows="4" required></textarea>
                             </div>
+                            <style>
+                                .btn-success {
+                                background-color: #28a745; /* Verde inicial */
+                                border-color: #28a745; /* Borde verde inicial */
+                                color: white; /* Texto blanco */
+                            }
 
+                            .btn-success:hover {
+                                background-color: #218838; /* Verde más oscuro al pasar el mouse */
+                                border-color: #1e7e34; /* Borde verde más oscuro */
+                                color: white; /* Texto blanco */
+                            }
+
+                            </style>
                             <!-- Botón Enviar -->
                             <div class="text-center">
                                 <button type="submit" class="btn btn-success btn-sm w-40 px-5 py-3 rounded-pill shadow-sm hover:shadow-lg focus:ring-4 focus:ring-green-300 mt-3">

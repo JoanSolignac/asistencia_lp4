@@ -130,6 +130,16 @@
                         }
                     @endphp
                     <tr>
+                        <td class="text-center">{{ $asistencia['idAsistencia'] }}</td>
+                        <td class="text-center">{{ $asistencia['empleadoNombre'] }}</td>
+                        <td class="text-center">{{ \Carbon\Carbon::parse($asistencia['horaEntrada'])->format('H:i:s') }}</td>
+                        <td class="text-center">{{ $asistencia['estadoEntrada'] }}</td>
+                        <td class="text-center">{{ $asistencia['fechaEntrada'] }}</td>
+                        <td class="text-center">{{ $asistencia['horaSalida'] ? \Carbon\Carbon::parse($asistencia['horaSalida'])->format('H:i:s') : 'No registrada' }}</td>
+                        <td class="text-center">{{ $asistencia['estadoSalida'] ?? 'No registrada' }}</td>
+                        <td class="text-center">{{ $asistencia['fechaSalida'] ?? 'No registrada' }}</td>
+                    </tr>
+                    <!-- <tr>
                         <td>{{ $asistencia['idAsistencia'] }}</td>
                         <td>{{ $asistencia['empleadoNombre'] }}</td>
                         <td>{{ \Carbon\Carbon::parse($asistencia['horaEntrada'])->format('H:i:s') }}</td>
@@ -146,7 +156,7 @@
                             </span>
                         </td>
                         <td class="text-secondary">{{ $asistencia['fechaSalida'] ?? 'No registrada' }}</td>
-                    </tr>
+                    </tr> -->
                 @endforeach
             </tbody>
         </table>

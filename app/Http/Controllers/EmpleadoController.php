@@ -62,8 +62,11 @@ class EmpleadoController extends Controller
         ]);
 
 
-        //Por ahora que me mande a Inicio
-        return redirect()->route('empleados.index')->with('success', 'Empleado agregado correctamente');
+            // Mostrar notificación antes de redirigir
+        notify()->success('Empleado agregado correctamente');
+
+        // Redirigir con mensaje de éxito
+        return redirect()->route('empleados.index');
     }
     
     // Mostrar la lista de empleados
@@ -89,31 +92,32 @@ class EmpleadoController extends Controller
 
     public function update(Request $request, Empleado $empleado)
     {
-    // Validar los datos del formulario
-    $validated = $request->validate([
-        'nombre_apellido' => 'required|string|max:255',
-        'dni' => 'required|digits:8',
-        'fecha_nacimiento' => 'required|date',
-        'telefono' => 'required|digits_between:6,15',
-        'direccion' => 'required|string|max:255',
-        'idRol' => 'required|exists:roles,id',
-        'estado' => 'required|string',
-        'hora_entrada' => 'required|date_format:H:i',
-        'hora_salida' => 'required|date_format:H:i',
-    ]);
+        // Validar los datos del formulario
+        $validated = $request->validate([
+            'nombre_apellido' => 'required|string|max:255',
+            'dni' => 'required|digits:8',
+            'fecha_nacimiento' => 'required|date',
+            'telefono' => 'required|digits_between:6,15',
+            'direccion' => 'required|string|max:255',
+            'idRol' => 'required|exists:roles,id',
+            'estado' => 'required|string',
+            'hora_entrada' => 'required|date_format:H:i',
+            'hora_salida' => 'required|date_format:H:i',
+        ]);
 
-    // Parsear las fechas y horas a los formatos correctos
-    $validated['fecha_nacimiento'] = Carbon::parse($validated['fecha_nacimiento'])->format('Y-m-d');
-    $validated['hora_entrada'] = Carbon::parse($validated['hora_entrada'])->format('H:i:s');
-    $validated['hora_salida'] = Carbon::parse($validated['hora_salida'])->format('H:i:s');
+        // Parsear las fechas y horas a los formatos correctos
+        $validated['fecha_nacimiento'] = Carbon::parse($validated['fecha_nacimiento'])->format('Y-m-d');
+        $validated['hora_entrada'] = Carbon::parse($validated['hora_entrada'])->format('H:i:s');
+        $validated['hora_salida'] = Carbon::parse($validated['hora_salida'])->format('H:i:s');
 
-    // Actualizar el empleado
-    $empleado->update($validated);
+        // Actualizar el empleado
+        $empleado->update($validated);
 
-    // Redirigir con mensaje de éxito
-    return redirect()->route('empleados.index')->with('success', 'Empleado actualizado exitosamente.');
+        // Redirigir con mensaje de éxito
+        session()->flash('success', 'Empleado actualizado exitosamente.');
+
+        return redirect()->route('empleados.index');
     }
-
 
 
     // Eliminar un empleado

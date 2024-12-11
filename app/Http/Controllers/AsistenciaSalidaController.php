@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AsistenciaSalida;
+use App\Models\AsistenciaEntrada;
 use Illuminate\Http\Request;
 use App\Models\Empleado;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -30,7 +31,7 @@ class AsistenciaSalidaController extends Controller
 
         // Filtrar por fecha si se proporciona
         if ($fecha) {
-            $query->whereDate('hora_salida', $fecha);
+            $query->whereDate('created_at', $fecha);
         }
 
         // Obtener las salidas paginadas con los filtros aplicados
@@ -59,6 +60,21 @@ class AsistenciaSalidaController extends Controller
         // Buscar los datos del empleado
         $empleado = Empleado::findOrFail($empleado_id);
 
+        // Obtener la fecha de hoy
+        $fechaHoy = now()->toDateString(); // Solo la fecha sin hora
+
+        // Verificar si ya existe una entrada registrada para el empleado el día de hoy
+        $entradaHoy = AsistenciaEntrada::where('idEmpleado', $empleado_id)
+            ->whereDate('created_at', $fechaHoy) // Comparar solo la fecha
+            ->first();
+
+
+        // Si no existe entrada para el día de hoy, no permitir registrar la salida
+        if (!$entradaHoy) {
+            return redirect()->route('empleadoUser.dashboard')
+                ->with('error', 'No se puede registrar la salida porque no se ha registrado una entrada hoy.');
+        }
+
         // Obtener la hora actual
         $horaActual = now();
 
@@ -82,7 +98,8 @@ class AsistenciaSalidaController extends Controller
             : 'Salida registrada: Antes de la hora.';
 
         return redirect()->route('empleadoUser.dashboard')->with('success', $mensaje);
-    }
+}
+
 
 
 

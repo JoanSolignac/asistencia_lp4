@@ -33,6 +33,20 @@
                                     <td class="text-center">{{ $empleado->estado }}</td>
                                     <td class="text-center">
                                         <div class="btn-group">
+                                            <style>
+                                                .btn-danger {
+                                                    background-color: #dc3545; /* Color rojo de inicio */
+                                                    border-color: #dc3545; /* Borde rojo de inicio */
+                                                    color: white; /* Texto blanco */
+                                                }
+
+                                                .btn-danger:hover {
+                                                    background-color: #c82333; /* Rojo más intenso al pasar el mouse */
+                                                    border-color: #bd2130; /* Borde rojo más oscuro */
+                                                    color: white; /* Texto blanco */
+                                                }
+
+                                            </style>
                                             <!-- Botón Editar -->
                                             <a href="{{ route('empleados.edit', $empleado->id) }}" class="btn btn-primary btn-sm mx-1">
                                                 {{ __('Editar') }}
