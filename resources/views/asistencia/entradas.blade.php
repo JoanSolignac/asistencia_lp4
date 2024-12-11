@@ -24,22 +24,33 @@
                         </div>
                     @endif
 
-                    <!-- Formulario de búsqueda -->
-                    <form method="GET" action="{{ route('asistencia.entradas') }}" class="mb-4 d-flex flex-wrap justify-content-center">
-                        <div class="form-group mx-2" style="flex: 1; max-width: 80%;">
-                            <input type="text" name="nombre" value="{{ request('nombre') }}" 
-                                   class="form-control form-control-lg rounded-3 border-secondary bg-light text-black shadow-sm w-100"
-                                   placeholder="Buscar por nombre del empleado...">
-                        </div>
-                        <div class="form-group mx-2" style="flex: 1; max-width: 20%;">
-                            <input type="date" name="fecha" value="{{ request('fecha') }}" 
-                                   class="form-control form-control-lg rounded-3 border-secondary bg-light text-black shadow-sm w-100"
-                                   placeholder="Buscar por fecha...">
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg shadow-sm mx-2">
-                            {{ __('Buscar') }}
-                        </button>
-                    </form>
+                    <!-- Formulario de búsqueda y botones en la misma línea -->
+                    <div class="d-flex justify-content-between mb-4 w-100">
+                        <!-- Formulario de búsqueda -->
+                        <form method="GET" action="{{ route('asistencia.entradas') }}" class="d-flex w-100">
+                            <div class="form-group mx-2" style="flex: 1; max-width: 75%;">
+                                <input type="text" name="nombre" value="{{ request('nombre') }}" 
+                                    class="form-control form-control-lg rounded-3 border-secondary bg-light text-black shadow-sm w-100"
+                                    placeholder="Buscar por nombre del empleado...">
+                            </div>
+                            <div class="form-group mx-2" style="flex: 1; max-width: 20%;">
+                                <input type="date" name="fecha" value="{{ request('fecha') }}" 
+                                    class="form-control form-control-lg rounded-3 border-secondary bg-light text-black shadow-sm w-100"
+                                    placeholder="Buscar por fecha...">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg shadow-sm mx-2">
+                                {{ __('Buscar') }}
+                            </button>
+                        </form>
+
+                        <!-- Botón de reporte -->
+                        <a href="{{ route('asistencia.reporteentrada', ['nombre' => request('nombre'), 'fecha' => request('fecha')]) }}" 
+                        class="btn btn-danger btn-sm shadow-sm mx-2">
+                            {{ __('Reporte PDF') }}
+                        </a>
+
+                    </div>
+
 
                     <!-- Tabla de entradas -->
                     <table class="table table-striped table-bordered table-hover align-middle">

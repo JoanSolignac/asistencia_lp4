@@ -37,7 +37,7 @@ class RolController extends Controller
         $query = Rol::query();
 
         if ($request->has('role-search') && !empty($request->input('role-search'))) {
-            $query->where('nombre', 'like', '%' . $request->input('role-search') . '%');
+            $query->where('nombre', 'like', $request->input('role-search') . '%');
         }
 
         $roles = $query->paginate(10);

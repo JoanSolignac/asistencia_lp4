@@ -37,6 +37,10 @@
                         <button type="submit" class="btn btn-primary btn-lg shadow-sm mx-2">
                             {{ __('Buscar') }}
                         </button>
+                        <a href="{{ route('asistencia.reportesalida', ['nombre' => request('nombre'), 'fecha' => request('fecha')]) }}" 
+                           class="btn btn-danger btn-lg shadow-sm mx-2">
+                            {{ __('Reporte PDF') }}
+                        </a>
                     </form>
 
                     <!-- Tabla de salidas -->

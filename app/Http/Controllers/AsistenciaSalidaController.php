@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AsistenciaSalida;
 use Illuminate\Http\Request;
 use App\Models\Empleado;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AsistenciaSalidaController extends Controller
 {
@@ -115,5 +116,36 @@ class AsistenciaSalidaController extends Controller
     public function destroy(AsistenciaSalida $asistenciaSalida)
     {
         //
+    }
+
+    public function generarReporteSalida(Request $request)
+    {
+        // Capturar los parámetros de búsqueda (si los hay)
+        $nombre = $request->input('nombre');
+        $fecha = $request->input('fecha');
+
+        // Consulta base con relaciones
+        $query = AsistenciaSalida::with('empleado');
+
+        // Filtrar por nombre si se proporciona
+        if ($nombre) {
+            $query->whereHas('empleado', function ($q) use ($nombre) {
+                $q->where('nombre_apellido', 'like', '%' . $nombre . '%');
+            });
+        }
+
+        // Filtrar por fecha si se proporciona
+        if ($fecha) {
+            $query->whereDate('hora_salida', $fecha);
+        }
+
+        // Obtener los resultados de la consulta
+        $salidas = $query->get();
+
+        // Generar el PDF a partir de la vista 'reportesalida'
+        $pdf = Pdf::loadView('asistencia.reportesalida', compact('salidas'));
+
+        // Retornar el PDF como respuesta para descarga
+        return $pdf->download('reporte_salidas.pdf');
     }
 }

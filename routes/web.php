@@ -72,8 +72,20 @@ Route::middleware('auth')->group(function () {
     // Actualizar los datos del empleado
     Route::put('/empleados/{empleado}', [EmpleadoController::class, 'update'])->name('empleados.update');
     
+    
     // Eliminar un empleado
     Route::delete('/empleados/{empleado}', [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
+    // Reporte General de empleados
+    Route::get('/asistencia/reporte', [AsistenciaController::class, 'generarReporte'])->name('asistencia.reporte');
+    // Reporte Entrada de empleados
+    Route::get('/asistencia/reporteentrada', [AsistenciaEntradaController::class, 'generarReporteEntrada'])->name('asistencia.reporteentrada');
+    // Reporte Salidas de empleados
+    Route::get('/asistencia/reportesalida', [AsistenciaSalidaController::class, 'generarReporteSalida'])->name('asistencia.reportesalida');
+    
+    
+
+
+
 });
 //Fin de Gestion de Empleados
 
